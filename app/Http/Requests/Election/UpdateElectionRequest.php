@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Http\Requests\Election;
+
+use App\Enum\ElectionTypeEnum;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+class UpdateElectionRequest extends FormRequest
+{
+    public function rules(): array
+    {
+        return [
+            'name' => ['required', 'string', 'max:255'],
+            'type' => ['required', Rule::enum(ElectionTypeEnum::class)],
+            'info' => ['nullable', 'string'],
+            'publish_from' => ['required', 'date', 'after:today'],
+            'start_from' => ['required', 'date', 'after:publish_from'],
+            'end_to' => ['required', 'date', 'after:start_from'],
+        ];
+    }
+}
