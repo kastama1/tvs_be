@@ -12,7 +12,7 @@ class ElectionController extends Controller
 {
     public function index()
     {
-        $elections = Election::all()->sortBy('start_from')->sortBy('type');
+        $elections = Election::all();
 
         return ElectionResource::collection($elections);
     }
