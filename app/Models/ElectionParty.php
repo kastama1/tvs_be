@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * ID
@@ -21,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * FOREIGN KEYS
  *
  * RELATIONS
+ * @property Collection<Election> $elections
  *
  */
 class ElectionParty extends Model
@@ -31,4 +34,9 @@ class ElectionParty extends Model
         'name',
         'campaign',
     ];
+
+    public function elections(): BelongsToMany
+    {
+        return $this->belongsToMany(Election::class);
+    }
 }

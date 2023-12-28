@@ -27,6 +27,7 @@ Route::middleware(['auth:sanctum'])->group(static function () {
         Route::get('/{election}', [ElectionController::class, 'show']);
         Route::post('/', [ElectionController::class, 'store']);
         Route::put('/{election}', [ElectionController::class, 'update']);
+        Route::put('/{election}/assign-election-parties', [ElectionController::class, 'assignElectionParties']);
     });
 
     Route::prefix('/election-parties')->group(static function () {

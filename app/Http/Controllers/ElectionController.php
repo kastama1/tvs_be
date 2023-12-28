@@ -2,22 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Election\AssignElectionPartiesElectionRequest;
 use App\Http\Requests\Election\StoreElectionRequest;
 use App\Http\Requests\Election\UpdateElectionRequest;
 use App\Http\Resources\ElectionResource;
 use App\Http\Resources\ElectionsByTypeResource;
 use App\Models\Election;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 
 class ElectionController extends Controller
 {
-    public function index()
+    public function index(): AnonymousResourceCollection
     {
         $elections = Election::all();
 
         return ElectionResource::collection($elections);
     }
 
-    public function listByType()
+    public function listByType(): AnonymousResourceCollection
     {
         $elections = Election::all()->sortBy('start_from')->sortBy('type')->groupBy('type');
 
@@ -28,21 +31,30 @@ class ElectionController extends Controller
         return ElectionsByTypeResource::collection($electionsByType->values());
     }
 
-    public function show(Election $election)
+    public function show(Election $election): ElectionResource
     {
+        $election->load('electionParties');
+
         return ElectionResource::make($election);
     }
 
-    public function store(StoreElectionRequest $request)
+    public function store(StoreElectionRequest $request): Response
     {
         Election::create($request->validated());
 
         return response()->noContent();
     }
 
-    public function update(UpdateElectionRequest $request, Election $election)
+    public function update(UpdateElectionRequest $request, Election $election): Response
     {
        $election->update($request->validated());
+
+        return response()->noContent();
+    }
+
+    public function assignElectionParties(AssignElectionPartiesElectionRequest $request, Election $election): Response
+    {
+        $election->electionParties()->sync($request->validated()['election_parties']);
 
         return response()->noContent();
     }
