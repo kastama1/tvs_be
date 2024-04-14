@@ -9,6 +9,8 @@ class FileController extends Controller
 {
     public function destroy(File $file, FileService $fileService)
     {
+        $this->authorize('destroy');
+
         $fileService->deleteFile($file);
 
         $file->delete();

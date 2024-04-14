@@ -40,6 +40,8 @@ class ElectionController extends Controller
 
     public function store(StoreElectionRequest $request): Response
     {
+        $this->authorize('store');
+
         Election::create($request->validated());
 
         return response()->noContent();
@@ -47,6 +49,8 @@ class ElectionController extends Controller
 
     public function update(UpdateElectionRequest $request, Election $election): Response
     {
+        $this->authorize('update');
+
         $election->update($request->validated());
 
         return response()->noContent();
@@ -54,6 +58,8 @@ class ElectionController extends Controller
 
     public function assignElectionParties(AssignElectionPartiesElectionRequest $request, Election $election): Response
     {
+        $this->authorize('assignElectionParties');
+
         $election->electionParties()->sync($request->validated()['election_parties']);
 
         return response()->noContent();
