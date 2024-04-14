@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * ID
+ *
  * @property int $id
  *
  * ATTRIBUTES
@@ -23,7 +24,6 @@ use Illuminate\Database\Eloquent\Model;
  * FOREIGN KEYS
  *
  * RELATIONS
- *
  */
 class File extends Model
 {
@@ -34,6 +34,4 @@ class File extends Model
         'path',
         'type',
     ];
-
-
 }

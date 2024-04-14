@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * ID
+ *
  * @property int $id
  *
  * ATTRIBUTES
@@ -29,7 +30,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *
  * RELATIONS
  * @property Collection<ElectionParty> $electionParties
- *
  */
 class Election extends Model
 {

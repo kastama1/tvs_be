@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
  * ID
+ *
  * @property int $id
  *
  * ATTRIBUTES
@@ -27,7 +28,6 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * RELATIONS
  * @property ElectionParty $electionParty
  * @property Collection<File> $images
- *
  */
 class Candidate extends Model
 {

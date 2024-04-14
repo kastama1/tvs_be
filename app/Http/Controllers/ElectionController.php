@@ -47,7 +47,7 @@ class ElectionController extends Controller
 
     public function update(UpdateElectionRequest $request, Election $election): Response
     {
-       $election->update($request->validated());
+        $election->update($request->validated());
 
         return response()->noContent();
     }

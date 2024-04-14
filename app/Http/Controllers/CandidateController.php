@@ -35,7 +35,7 @@ class CandidateController extends Controller
         if (array_key_exists('images', $candidateData)) {
             $fileService->uploadImages(
                 $candidateData['images'],
-                'candidates/' . $candidate->id,
+                'candidates/'.$candidate->id,
                 $candidate,
             );
         }
@@ -49,10 +49,10 @@ class CandidateController extends Controller
 
         $candidate->update($candidateData);
 
-        if(array_key_exists('images', $candidateData)) {
+        if (array_key_exists('images', $candidateData)) {
             $fileService->uploadImages(
                 $candidateData['images'],
-                'candidates/' . $candidate->id,
+                'candidates/'.$candidate->id,
                 $candidate,
             );
         }
@@ -60,4 +60,3 @@ class CandidateController extends Controller
         return response()->noContent();
     }
 }
-

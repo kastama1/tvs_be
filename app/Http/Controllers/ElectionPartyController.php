@@ -20,7 +20,6 @@ class ElectionPartyController extends Controller
         return ElectionPartyResource::collection($electionParties);
     }
 
-
     public function show(ElectionParty $electionParty): ElectionPartyResource
     {
         $electionParty->load('candidates');

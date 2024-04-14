@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\ElectionParty;
 
-use App\Enum\ElectionTypeEnum;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreElectionPartyRequest extends FormRequest
 {
