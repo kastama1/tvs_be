@@ -6,7 +6,7 @@ use App\Models\ElectionParty;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ElectionPartyResource extends JsonResource
+class ElectionPartyWithoutCandidatesResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,7 +20,6 @@ class ElectionPartyResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'campaign' => $this->campaign,
-            'candidates' => CandidateResource::collection($this->candidates),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

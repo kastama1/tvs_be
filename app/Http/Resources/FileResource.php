@@ -2,11 +2,11 @@
 
 namespace App\Http\Resources;
 
-use App\Models\ElectionParty;
+use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ElectionPartyResource extends JsonResource
+class FileResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,12 +15,13 @@ class ElectionPartyResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        /** @var ElectionParty $this */
+        /** @var File $this */
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'campaign' => $this->campaign,
-            'candidates' => CandidateResource::collection($this->candidates),
+            'type' => $this->type,
+            'path' => $this->path,
+            'url' => asset($this->path),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

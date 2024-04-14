@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * ID
@@ -24,6 +25,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *
  * RELATIONS
  * @property Collection<Election> $elections
+ * @property Collection<Candidate> $candidates
  *
  */
 class ElectionParty extends Model
@@ -38,5 +40,10 @@ class ElectionParty extends Model
     public function elections(): BelongsToMany
     {
         return $this->belongsToMany(Election::class);
+    }
+
+    public function candidates(): HasMany
+    {
+        return $this->hasMany(Candidate::class);
     }
 }

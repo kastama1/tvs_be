@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\ElectionTypeEnum;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *
  * ATTRIBUTES
  * @property string $name
- * @property string $type
+ * @property ElectionTypeEnum $type
  * @property string $info
  *
  * TIMESTAMPS

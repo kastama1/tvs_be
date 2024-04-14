@@ -13,14 +13,18 @@ class ElectionPartyController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-        $elections = ElectionParty::all();
+        $electionParties = ElectionParty::all();
 
-        return ElectionPartyResource::collection($elections);
+        $electionParties->load('candidates');
+
+        return ElectionPartyResource::collection($electionParties);
     }
 
 
     public function show(ElectionParty $electionParty): ElectionPartyResource
     {
+        $electionParty->load('candidates');
+
         return ElectionPartyResource::make($electionParty);
     }
 

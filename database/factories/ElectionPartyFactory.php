@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Enum\ElectionTypeEnum;
-use Carbon\Carbon;
+use App\Models\Candidate;
+use App\Models\ElectionParty;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ElectionPartyFactory extends Factory
@@ -14,5 +14,12 @@ class ElectionPartyFactory extends Factory
             'name' => ucfirst(fake()->words(3, true)),
             'campaign' => fake()->realText(600),
         ];
+    }
+
+    public function configure()
+    {
+        return $this->afterCreating(function (ElectionParty $electionParty) {
+            $electionParty->candidates()->saveMany(Candidate::factory(10)->create());
+        });
     }
 }

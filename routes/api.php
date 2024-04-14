@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\ElectionController;
 use App\Http\Controllers\ElectionPartyController;
+use App\Http\Controllers\FileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +37,17 @@ Route::middleware(['auth:sanctum'])->group(static function () {
         Route::get('/{election_party}', [ElectionPartyController::class, 'show']);
         Route::post('/', [ElectionPartyController::class, 'store']);
         Route::put('/{election_party}', [ElectionPartyController::class, 'update']);
+    });
+
+    Route::prefix('/candidates')->group(static function () {
+        Route::get('/', [CandidateController::class, 'index']);
+        Route::get('/{candidate}', [CandidateController::class, 'show']);
+        Route::post('/', [CandidateController::class, 'store']);
+        Route::put('/{candidate}', [CandidateController::class, 'update']);
+    });
+
+    Route::prefix('/files')->group(static function () {
+        Route::delete('/{file}', [FileController::class, 'destroy']);
     });
 });
 

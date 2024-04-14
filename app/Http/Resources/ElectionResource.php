@@ -21,7 +21,7 @@ class ElectionResource extends JsonResource
             'name' => $this->name,
             'type' => $this->type,
             'info' => $this->info,
-            'electionParties' => $this->electionParties,
+            'electionParties' => ElectionPartyResource::collection($this->electionParties),
             'publishFrom' => $this->publish_from,
             'startFrom' => $this->start_from,
             'endTo' => $this->end_to,
