@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enum\FileTypeEnum;
 use App\Models\Candidate;
+use App\Models\ElectionParty;
 use App\Models\File as FileModel;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
@@ -13,7 +14,7 @@ class FileService
     public function uploadImages(
         array $files,
         string $path,
-        Candidate $model,
+        Candidate|ElectionParty $model,
     ): void {
         foreach ($files as $file) {
             $this->uploadImage($file, $path, $file->getClientOriginalName(), $model);
@@ -24,7 +25,7 @@ class FileService
         UploadedFile $file,
         string $path,
         string $fileName,
-        Candidate $model,
+        Candidate|ElectionParty $model,
     ): void {
         $path = $file->store($path, 'public');
 

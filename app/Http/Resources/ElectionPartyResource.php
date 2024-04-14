@@ -20,6 +20,7 @@ class ElectionPartyResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'campaign' => $this->campaign,
+            'images' => FileResource::collection($this->images),
             'candidates' => CandidateResource::collection($this->candidates),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,

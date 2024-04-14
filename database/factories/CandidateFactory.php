@@ -19,7 +19,7 @@ class CandidateFactory extends Factory
     public function configure()
     {
         return $this->afterCreating(function (Candidate $candidate) {
-            $candidate->images()->saveMany(File::factory(5)->image()->make());
+            $candidate->images()->saveMany(File::factory(1)->image()->make());
         });
     }
 }

@@ -51,6 +51,6 @@ class Candidate extends Model
 
     public function files(): MorphToMany
     {
-        return $this->morphToMany(File::class, 'fileable');
+        return $this->morphToMany(File::class, 'fileable')->where('type', FileTypeEnum::FILE);
     }
 }

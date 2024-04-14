@@ -11,6 +11,8 @@ class StoreElectionPartyRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'campaign' => ['nullable', 'string'],
+            'images' => ['nullable', 'min:1', 'max:5'],
+            'images.*' => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
         ];
     }
 }
