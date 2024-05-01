@@ -6,10 +6,12 @@ use App\Models\Candidate;
 use App\Models\Election;
 use App\Models\ElectionParty;
 use App\Models\File;
+use App\Models\Vote;
 use App\Policies\CandidatePolicy;
 use App\Policies\ElectionPartyPolicy;
 use App\Policies\ElectionPolicy;
 use App\Policies\FilePolicy;
+use App\Policies\VotePolicy;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -25,6 +27,7 @@ class AuthServiceProvider extends ServiceProvider
         ElectionParty::class => ElectionPartyPolicy::class,
         Candidate::class => CandidatePolicy::class,
         File::class => FilePolicy::class,
+        Vote::class => VotePolicy::class,
     ];
 
     /**

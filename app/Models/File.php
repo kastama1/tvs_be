@@ -34,4 +34,8 @@ class File extends Model
         'path',
         'type',
     ];
+
+    protected $casts = [
+        'type' => FileTypeEnum::class
+    ];
 }

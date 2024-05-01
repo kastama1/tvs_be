@@ -3,11 +3,29 @@
 namespace App\Policies;
 
 use App\Enum\UserRoleEnum;
+use App\Models\Election;
 use App\Models\User;
 
 class ElectionPolicy
 {
-    public function store(User $user): bool
+    public function listPublish(User $user): bool
+    {
+        return $user->role === UserRoleEnum::VOTER;
+    }
+    public function listAll(User $user): bool
+    {
+        return $user->role === UserRoleEnum::ADMIN;
+    }
+
+    public function view(User $user, Election $election): bool
+    {
+        $isAdmin = $user->role === UserRoleEnum::ADMIN;
+        $isVoter = $user->role === UserRoleEnum::VOTER;
+        $isPublished = $election->published;
+
+        return $isAdmin || ($isVoter && $isPublished);
+    }
+    public function create(User $user): bool
     {
         return $user->role === UserRoleEnum::ADMIN;
     }
@@ -15,6 +33,11 @@ class ElectionPolicy
     public function update(User $user): bool
     {
         return $user->role === UserRoleEnum::ADMIN;
+    }
+
+    public function vote(User $user, Election $election): bool
+    {
+        return $user->role === UserRoleEnum::VOTER && $election->active;
     }
 
     public function assignElectionParties(User $user): bool

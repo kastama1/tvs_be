@@ -5,7 +5,9 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enum\UserRoleEnum;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -28,6 +30,7 @@ use Laravel\Sanctum\HasApiTokens;
  * FOREIGN KEYS
  *
  * RELATIONS
+ * @property Collection<Vote> $votes
  */
 class User extends Authenticatable
 {
@@ -47,5 +50,11 @@ class User extends Authenticatable
 
     protected $casts = [
         'password' => 'hashed',
+        'role' => UserRoleEnum::class
     ];
+
+    public function votes(): HasMany
+    {
+        return $this->hasMany(Vote::class);
+    }
 }

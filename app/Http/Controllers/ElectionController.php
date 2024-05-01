@@ -2,20 +2,36 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Election\AssignCandidatesElectionRequest;
 use App\Http\Requests\Election\AssignElectionPartiesElectionRequest;
 use App\Http\Requests\Election\StoreElectionRequest;
 use App\Http\Requests\Election\UpdateElectionRequest;
+use App\Http\Requests\Election\VoteElectionRequest;
 use App\Http\Resources\ElectionResource;
 use App\Http\Resources\ElectionsByTypeResource;
+use App\Http\Resources\VoteResource;
 use App\Models\Election;
+use App\Services\VoteService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class ElectionController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-        $elections = Election::all();
+
+        $electionQuery = Election::query();
+
+        if (Gate::check('listAll', Election::class)){
+            $elections = $electionQuery->get();
+        } elseif (Gate::check('listPublish', Election::class)) {
+            $elections = $electionQuery->published()->get();
+        } else {
+            $elections = [];
+        }
 
         return ElectionResource::collection($elections);
     }
@@ -33,6 +49,8 @@ class ElectionController extends Controller
 
     public function show(Election $election): ElectionResource
     {
+        $this->authorize('view', $election);
+
         $election->load('electionParties');
 
         return ElectionResource::make($election);
@@ -40,8 +58,6 @@ class ElectionController extends Controller
 
     public function store(StoreElectionRequest $request): Response
     {
-        $this->authorize('store');
-
         Election::create($request->validated());
 
         return response()->noContent();
@@ -49,18 +65,42 @@ class ElectionController extends Controller
 
     public function update(UpdateElectionRequest $request, Election $election): Response
     {
-        $this->authorize('update');
-
         $election->update($request->validated());
+
+        return response()->noContent();
+    }
+
+    public function showVote(Election $election): VoteResource|JsonResponse
+    {
+        $vote = Auth::user()->votes()->ofElection($election)->first();
+
+        if (!is_null($vote)) {
+            $this->authorize('view', $vote);
+
+            return VoteResource::make($vote);
+        } else {
+            return response()->json(["data" => []]);
+        }
+    }
+
+    public function vote(VoteElectionRequest $request, Election $election, VoteService $voteService): Response
+    {
+        $voteData = $request->validated();
+        $voteService->vote($election, $voteData['electionParty']);
 
         return response()->noContent();
     }
 
     public function assignElectionParties(AssignElectionPartiesElectionRequest $request, Election $election): Response
     {
-        $this->authorize('assignElectionParties');
-
         $election->electionParties()->sync($request->validated()['election_parties']);
+
+        return response()->noContent();
+    }
+
+    public function assignCandidates(AssignCandidatesElectionRequest $request, Election $election): Response
+    {
+        $election->candidates()->sync($request->validated()['candidates']);
 
         return response()->noContent();
     }
