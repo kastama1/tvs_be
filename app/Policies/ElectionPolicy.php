@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enum\ElectionTypeEnum;
 use App\Enum\UserRoleEnum;
 use App\Models\Election;
 use App\Models\User;
@@ -43,5 +44,13 @@ class ElectionPolicy
     public function assignElectionParties(User $user): bool
     {
         return $user->role === UserRoleEnum::ADMIN;
+    }
+
+    public function assignCandidates(User $user, Election $election): bool
+    {
+        $isAdmin = $user->role === UserRoleEnum::ADMIN;
+        $isType = $election->type === ElectionTypeEnum::PRESIDENTIAL_ELECTION;
+
+        return $isAdmin && $isType;
     }
 }

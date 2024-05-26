@@ -12,7 +12,6 @@ use App\Http\Resources\ElectionsByTypeResource;
 use App\Http\Resources\VoteResource;
 use App\Models\Election;
 use App\Services\VoteService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -70,23 +69,20 @@ class ElectionController extends Controller
         return response()->noContent();
     }
 
-    public function showVote(Election $election): VoteResource|JsonResponse
+    public function showVote(Election $election): AnonymousResourceCollection
     {
-        $vote = Auth::user()->votes()->ofElection($election)->first();
+        $votes = Auth::user()->votes()->ofElection($election)->get();
 
-        if (!is_null($vote)) {
+        foreach ($votes as $vote) {
             $this->authorize('view', $vote);
-
-            return VoteResource::make($vote);
-        } else {
-            return response()->json(["data" => []]);
         }
+
+        return VoteResource::collection($votes);
     }
 
     public function vote(VoteElectionRequest $request, Election $election, VoteService $voteService): Response
     {
-        $voteData = $request->validated();
-        $voteService->vote($election, $voteData['electionParty']);
+        $voteService->vote($election, $request->validated());
 
         return response()->noContent();
     }

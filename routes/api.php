@@ -32,6 +32,7 @@ Route::middleware(['auth:sanctum'])->group(static function () {
         Route::get('/{election}/vote', [ElectionController::class, 'showVote']);
         Route::post('/{election}/vote', [ElectionController::class, 'vote']);
         Route::put('/{election}/assign-election-parties', [ElectionController::class, 'assignElectionParties']);
+        Route::put('/{election}/assign-candidates', [ElectionController::class, 'assignCandidates']);
     });
 
     Route::prefix('/election-parties')->group(static function () {

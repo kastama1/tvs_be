@@ -15,7 +15,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int $id
  *
  * ATTRIBUTES
- * @property
+ * @property int $votable_id
+ * @property string $votable_type
  *
  * TIMESTAMPS
  * @property Carbon $created_at
@@ -26,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * RELATIONS
  * @property Collection<ElectionParty|Candidate> $votable
  * @property User $user
+ * @property Election $election
  */
 class Vote extends Model
 {
@@ -48,5 +50,10 @@ class Vote extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function election(): BelongsTo
+    {
+        return $this->belongsTo(Election::class);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Election;
 
+use App\Models\Candidate;
+use App\Models\Election;
 use App\Models\ElectionParty;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
@@ -17,8 +19,18 @@ class VoteElectionRequest extends FormRequest
     }
     public function rules(): array
     {
-        return [
-            'electionParty' => ['required', 'integer', Rule::exists(ElectionParty::class, 'id')],
+        /** @var $election Election */
+        $election = $this->route('election');
+
+        $rules = [
+            'vote' => ['required', 'integer', Rule::exists($election->votableType, 'id')],
         ];
+
+        if ($election->votableType === ElectionParty::class) {
+            $rules['prefer_votes'] = ['nullable', 'array'];
+            $rules['prefer_votes.*'] = ['nullable', 'integer', Rule::exists(Candidate::class, 'id')];
+        }
+
+        return $rules;
     }
 }

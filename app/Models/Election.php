@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enum\ElectionTypeEnum;
+use App\Enum\ElectionVotableTypeEnum;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -22,6 +23,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string $info
  * @property bool $published
  * @property bool $active
+ * @property ElectionVotableTypeEnum $votable
+ * @property string $votableType
+ * @property int $preferVotes
  *
  * TIMESTAMPS
  * @property Carbon $publish_from
@@ -34,6 +38,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *
  * RELATIONS
  * @property Collection<ElectionParty> $electionParties
+ * @property Collection<Candidate> $candidates
  */
 class Election extends Model
 {
@@ -73,6 +78,55 @@ class Election extends Model
         );
     }
 
+    protected function votable(): Attribute
+    {
+        return new Attribute(
+            get: function (): ElectionVotableTypeEnum {
+                switch ($this->type) {
+                    case ElectionTypeEnum::PRESIDENTIAL_ELECTION:
+                    case ElectionTypeEnum::SENATE_ELECTION:
+                        return ElectionVotableTypeEnum::CANDIDATES;
+                    default:
+                        return ElectionVotableTypeEnum::ELECTION_PARTIES;
+                }
+            }
+        );
+    }
+
+    protected function votableType(): Attribute
+    {
+        return new Attribute(
+            get: function (): string {
+                    switch ($this->type) {
+                        case ElectionTypeEnum::PRESIDENTIAL_ELECTION:
+                        case ElectionTypeEnum::SENATE_ELECTION:
+                            return Candidate::class;
+                        default:
+                            return ElectionParty::class;
+                    }
+                }
+        );
+    }
+
+    protected function preferVotes(): Attribute
+    {
+        return new Attribute(
+            get: function (): int {
+                switch ($this->type) {
+                    case ElectionTypeEnum::CHAMBER_OF_DEPUTIES_ELECTION:
+                    case ElectionTypeEnum::REGIONAL_ASSEMBLY_ELECTION:
+                        return 4;
+                    case ElectionTypeEnum::EUROPEAN_PARLIAMENT_ELECTION:
+                        return 2;
+                    case ElectionTypeEnum::MUNICIPAL_ASSEMBLY_ELECTION:
+                        return 5;
+                    default:
+                        return 0;
+                }
+            }
+        );
+    }
+
     public function scopePublished(Builder $query): Builder
     {
         $now = now();
@@ -82,5 +136,10 @@ class Election extends Model
     public function electionParties(): BelongsToMany
     {
         return $this->belongsToMany(ElectionParty::class);
+    }
+
+    public function candidates(): BelongsToMany
+    {
+        return $this->belongsToMany(Candidate::class);
     }
 }
