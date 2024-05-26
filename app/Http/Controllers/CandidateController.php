@@ -7,6 +7,7 @@ use App\Http\Requests\Candidate\UpdateCandidateRequest;
 use App\Http\Resources\CandidateResource;
 use App\Models\Candidate;
 use App\Services\FileService;
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
@@ -15,6 +16,8 @@ class CandidateController extends Controller
     public function index(): AnonymousResourceCollection
     {
         $candidates = Candidate::all();
+
+        dump(Carbon::now());
 
         return CandidateResource::collection($candidates);
     }
