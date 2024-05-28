@@ -28,7 +28,7 @@ class CandidateController extends Controller
 
     public function store(StoreCandidateRequest $request, FileService $fileService): Response
     {
-        $this->authorize('store');
+        dump('Hello');
 
         $candidateData = $request->validated();
 
@@ -47,8 +47,6 @@ class CandidateController extends Controller
 
     public function update(UpdateCandidateRequest $request, Candidate $candidate, FileService $fileService): Response
     {
-        $this->authorize('update');
-
         $candidateData = $request->validated();
 
         $candidate->update($candidateData);

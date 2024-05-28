@@ -30,8 +30,6 @@ class ElectionPartyController extends Controller
 
     public function store(StoreElectionPartyRequest $request, FileService $fileService): Response
     {
-        $this->authorize('store');
-
         $electionPartyData = $request->validated();
 
         $electionParty = ElectionParty::create($electionPartyData);
@@ -49,8 +47,6 @@ class ElectionPartyController extends Controller
 
     public function update(UpdateElectionPartyRequest $request, ElectionParty $electionParty, FileService $fileService): Response
     {
-        $this->authorize('update');
-
         $electionPartyData = $request->validated();
 
         $electionParty->update($electionPartyData);

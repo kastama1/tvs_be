@@ -2,10 +2,16 @@
 
 namespace App\Http\Requests\Candidate;
 
+use App\Models\Candidate;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class StoreCandidateRequest extends FormRequest
 {
+    public function authorize(): bool
+    {
+        return Gate::check('store', Candidate::class);
+    }
     public function rules(): array
     {
         return [
