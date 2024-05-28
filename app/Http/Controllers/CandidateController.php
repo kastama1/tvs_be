@@ -28,8 +28,6 @@ class CandidateController extends Controller
 
     public function store(StoreCandidateRequest $request, FileService $fileService): Response
     {
-        dump('Hello');
-
         $candidateData = $request->validated();
 
         $candidate = Candidate::create($candidateData);
