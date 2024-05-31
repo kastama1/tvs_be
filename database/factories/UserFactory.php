@@ -18,6 +18,22 @@ class UserFactory extends Factory
         ];
     }
 
+    public function testAdmin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'email' => 'testadmin@test.com',
+            'role' => UserRoleEnum::ADMIN,
+        ]);
+    }
+
+    public function testVoter(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'email' => 'testvoter@test.com',
+            'role' => UserRoleEnum::VOTER,
+        ]);
+    }
+
     public function admin(): static
     {
         return $this->state(fn (array $attributes) => [
