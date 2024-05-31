@@ -8,7 +8,6 @@ use App\Http\Requests\Election\StoreElectionRequest;
 use App\Http\Requests\Election\UpdateElectionRequest;
 use App\Http\Requests\Election\VoteElectionRequest;
 use App\Http\Resources\ElectionResource;
-use App\Http\Resources\ElectionsByTypeResource;
 use App\Http\Resources\VoteResource;
 use App\Models\Election;
 use App\Services\VoteService;
@@ -21,36 +20,24 @@ class ElectionController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-
         $electionQuery = Election::query();
 
         if (Gate::check('listAll', Election::class)){
-            $elections = $electionQuery->get();
+            //
         } elseif (Gate::check('listPublish', Election::class)) {
-            $elections = $electionQuery->published()->get();
-        } else {
-            $elections = [];
+            $electionQuery = $electionQuery->published();
         }
 
-        return ElectionResource::collection($elections);
-    }
+        $electionQuery = $electionQuery->with('candidates', 'candidates.electionParty', 'candidates.images', 'electionParties', 'electionParties.images');
 
-    public function listByType(): AnonymousResourceCollection
-    {
-        $elections = Election::all()->sortBy('start_from')->sortBy('type')->groupBy('type');
-
-        $electionsByType = $elections->map(function ($elections, $key) {
-            return collect(['type' => $key, 'elections' => $elections]);
-        });
-
-        return ElectionsByTypeResource::collection($electionsByType->values());
+        return ElectionResource::collection($electionQuery->get());
     }
 
     public function show(Election $election): ElectionResource
     {
         $this->authorize('view', $election);
 
-        $election->load('electionParties');
+        $election->load('candidates', 'candidates.electionParty', 'candidates.images', 'electionParties', 'electionParties.images');
 
         return ElectionResource::make($election);
     }

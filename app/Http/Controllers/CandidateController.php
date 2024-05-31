@@ -14,14 +14,14 @@ class CandidateController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-        $candidates = Candidate::all();
+        $candidates = Candidate::with('electionParty', 'images')->get();
 
         return CandidateResource::collection($candidates);
     }
 
     public function show(Candidate $candidate): CandidateResource
     {
-        $candidate->load('images');
+        $candidate->load('electionParty', 'images');
 
         return CandidateResource::make($candidate);
     }

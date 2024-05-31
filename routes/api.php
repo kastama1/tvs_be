@@ -25,7 +25,6 @@ Route::middleware(['auth:sanctum'])->group(static function () {
 
     Route::prefix('/elections')->group(static function () {
         Route::get('/', [ElectionController::class, 'index']);
-        Route::get('/list-by-type', [ElectionController::class, 'listByType']);
         Route::get('/{election}', [ElectionController::class, 'show']);
         Route::post('/', [ElectionController::class, 'store']);
         Route::put('/{election}', [ElectionController::class, 'update']);

@@ -23,7 +23,7 @@ class ElectionResource extends JsonResource
             'votable' => $this->votable,
             'preferVotes' => $this->preferVotes,
             'info' => $this->info,
-            'electionParties' => ElectionPartyResource::collection($this->electionParties),
+            'electionParties' => ElectionPartyWithoutCandidatesResource::collection($this->electionParties),
             'candidates' => CandidateResource::collection($this->candidates),
             'published' => $this->published,
             'active' => $this->active,

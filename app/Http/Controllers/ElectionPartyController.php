@@ -14,9 +14,7 @@ class ElectionPartyController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-        $electionParties = ElectionParty::all();
-
-        $electionParties->load('candidates');
+        $electionParties = ElectionParty::with('candidates', 'images')->get();
 
         return ElectionPartyResource::collection($electionParties);
     }
