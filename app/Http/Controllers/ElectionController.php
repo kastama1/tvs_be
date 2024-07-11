@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Election\AssignCandidatesElectionRequest;
-use App\Http\Requests\Election\AssignElectionPartiesElectionRequest;
+use App\Http\Requests\Election\AssignOptionsElectionRequest;
 use App\Http\Requests\Election\StoreElectionRequest;
 use App\Http\Requests\Election\UpdateElectionRequest;
 use App\Http\Requests\Election\VoteElectionRequest;
 use App\Http\Resources\ElectionResource;
 use App\Http\Resources\VoteResource;
 use App\Models\Election;
+use App\Services\AssignOptionsService;
 use App\Services\VoteService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
@@ -74,16 +74,9 @@ class ElectionController extends Controller
         return response()->noContent();
     }
 
-    public function assignElectionParties(AssignElectionPartiesElectionRequest $request, Election $election): Response
+    public function assignOptions(AssignOptionsElectionRequest $request, Election $election, AssignOptionsService $assignService): Response
     {
-        $election->electionParties()->sync($request->validated()['election_parties']);
-
-        return response()->noContent();
-    }
-
-    public function assignCandidates(AssignCandidatesElectionRequest $request, Election $election): Response
-    {
-        $election->candidates()->sync($request->validated()['candidates']);
+        $assignService->assign($election, $request->validated());
 
         return response()->noContent();
     }
