@@ -12,6 +12,7 @@ class StoreCandidateRequest extends FormRequest
     {
         return Gate::check('store', Candidate::class);
     }
+
     public function rules(): array
     {
         return [

@@ -14,6 +14,7 @@ class UpdateElectionRequest extends FormRequest
     {
         return Gate::check('update', Election::class);
     }
+
     public function rules(): array
     {
         return [

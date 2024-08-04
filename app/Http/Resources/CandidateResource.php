@@ -22,6 +22,7 @@ class CandidateResource extends JsonResource
             'campaign' => $this->campaign,
             'images' => FileResource::collection($this->images),
             'electionParty' => $this->electionParty ? ElectionPartyWithoutCandidatesResource::make($this->electionParty) : null,
+            'votes' => $this->votes_count ? $this->votes_count : 0,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

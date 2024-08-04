@@ -12,6 +12,7 @@ class ElectionPolicy
     {
         return $user->role === UserRoleEnum::VOTER;
     }
+
     public function listAll(User $user): bool
     {
         return $user->role === UserRoleEnum::ADMIN;
@@ -25,6 +26,7 @@ class ElectionPolicy
 
         return $isAdmin || ($isVoter && $isPublished);
     }
+
     public function create(User $user): bool
     {
         return $user->role === UserRoleEnum::ADMIN;

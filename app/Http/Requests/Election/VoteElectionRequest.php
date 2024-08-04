@@ -17,6 +17,7 @@ class VoteElectionRequest extends FormRequest
 
         return Gate::check('vote', $election);
     }
+
     public function rules(): array
     {
         /** @var $election Election */

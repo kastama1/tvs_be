@@ -22,7 +22,6 @@ class ElectionSeeder extends Seeder
         Election::factory(2)->regionalAssembly()->create();
         Election::factory(2)->municipalAssembly()->create();
 
-
         $elections = Election::all();
         $candidates = Candidate::all();
         $parties = ElectionParty::all();

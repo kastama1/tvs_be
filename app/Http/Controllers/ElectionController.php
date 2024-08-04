@@ -22,7 +22,7 @@ class ElectionController extends Controller
     {
         $electionQuery = Election::query();
 
-        if (Gate::check('listAll', Election::class)){
+        if (Gate::check('listAll', Election::class)) {
             //
         } elseif (Gate::check('listPublish', Election::class)) {
             $electionQuery = $electionQuery->published();
@@ -38,6 +38,17 @@ class ElectionController extends Controller
         $this->authorize('view', $election);
 
         $election->load('candidates', 'candidates.electionParty', 'candidates.images', 'electionParties', 'electionParties.images');
+
+        if (Gate::check('listAll', Election::class)) {
+            $election->candidates->loadCount(['votes' => function ($query) use ($election) {
+                $query->ofElection($election);
+            }, ]);
+            $election->electionParties->loadCount(['votes' => function ($query) use ($election) {
+                $query->ofElection($election);
+            }, ]);
+        } elseif (Gate::check('listPublish', Election::class)) {
+            //
+        }
 
         return ElectionResource::make($election);
     }

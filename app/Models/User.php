@@ -50,7 +50,7 @@ class User extends Authenticatable
 
     protected $casts = [
         'password' => 'hashed',
-        'role' => UserRoleEnum::class
+        'role' => UserRoleEnum::class,
     ];
 
     public function votes(): HasMany

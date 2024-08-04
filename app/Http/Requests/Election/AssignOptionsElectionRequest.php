@@ -15,12 +15,13 @@ class AssignOptionsElectionRequest extends FormRequest
     {
         return Gate::check('assignOptions', Election::class);
     }
+
     public function rules(): array
     {
         /** @var $election Election */
         $election = $this->route('election');
 
-        if($election->votableType === ElectionParty::class) {
+        if ($election->votableType === ElectionParty::class) {
             return [
                 'options' => ['nullable', 'array'],
                 'options.*' => ['nullable', 'string', Rule::exists(ElectionParty::class, 'id')],

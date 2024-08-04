@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * ID
@@ -97,14 +98,14 @@ class Election extends Model
     {
         return new Attribute(
             get: function (): string {
-                    switch ($this->type) {
-                        case ElectionTypeEnum::PRESIDENTIAL_ELECTION:
-                        case ElectionTypeEnum::SENATE_ELECTION:
-                            return Candidate::class;
-                        default:
-                            return ElectionParty::class;
-                    }
+                switch ($this->type) {
+                    case ElectionTypeEnum::PRESIDENTIAL_ELECTION:
+                    case ElectionTypeEnum::SENATE_ELECTION:
+                        return Candidate::class;
+                    default:
+                        return ElectionParty::class;
                 }
+            }
         );
     }
 
@@ -130,6 +131,7 @@ class Election extends Model
     public function scopePublished(Builder $query): Builder
     {
         $now = now();
+
         return $query->where('publish_from', '<=', $now)->where('end_to', '>', $now);
     }
 
@@ -141,5 +143,10 @@ class Election extends Model
     public function candidates(): BelongsToMany
     {
         return $this->belongsToMany(Candidate::class);
+    }
+
+    public function votes(): HasMany
+    {
+        return $this->hasMany(Vote::class);
     }
 }

@@ -12,6 +12,7 @@ class StoreElectionPartyRequest extends FormRequest
     {
         return Gate::check('store', ElectionParty::class);
     }
+
     public function rules(): array
     {
         return [
