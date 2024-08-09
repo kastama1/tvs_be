@@ -30,6 +30,7 @@ use Laravel\Sanctum\HasApiTokens;
  * FOREIGN KEYS
  *
  * RELATIONS
+ * @property Vote $vote
  * @property Collection<Vote> $votes
  */
 class User extends Authenticatable
@@ -52,6 +53,11 @@ class User extends Authenticatable
         'password' => 'hashed',
         'role' => UserRoleEnum::class,
     ];
+
+    public function vote(): HasMany
+    {
+        return $this->hasMany(Vote::class)->where('vote_id', '=', null);
+    }
 
     public function votes(): HasMany
     {

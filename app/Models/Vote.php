@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
@@ -17,6 +18,11 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * ATTRIBUTES
  * @property int $votable_id
  * @property string $votable_type
+ * @property string $hash
+ * @property string $previous_hash
+ * @property string $election_id
+ * @property string $vote_id
+ * @property string $user_id
  *
  * TIMESTAMPS
  * @property Carbon $created_at
@@ -28,13 +34,23 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property Collection<ElectionParty|Candidate> $votable
  * @property User $user
  * @property Election $election
+ * @property Collection<Vote> $votes
  */
 class Vote extends Model
 {
     protected $fillable = [
         'votable_type',
+        'hash',
+        'previous_hash',
         'votable_id',
         'election_id',
+        'vote_id',
+    ];
+
+    protected $hidden = [
+        'hash',
+        'previous_hash',
+        'user_id',
     ];
 
     public function scopeOfElection(Builder $query, Election $election): Builder
@@ -55,5 +71,10 @@ class Vote extends Model
     public function election(): BelongsTo
     {
         return $this->belongsTo(Election::class);
+    }
+
+    public function votes(): HasMany
+    {
+        return $this->hasMany(Vote::class);
     }
 }

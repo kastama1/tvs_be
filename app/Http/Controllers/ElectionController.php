@@ -13,7 +13,6 @@ use App\Services\AssignOptionsService;
 use App\Services\VoteService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class ElectionController extends Controller
@@ -33,19 +32,14 @@ class ElectionController extends Controller
         return ElectionResource::collection($electionQuery->get());
     }
 
-    public function show(Election $election): ElectionResource
+    public function show(VoteService $voteService, Election $election): ElectionResource
     {
         $this->authorize('view', $election);
 
         $election->load('candidates', 'candidates.electionParty', 'candidates.images', 'electionParties', 'electionParties.images');
 
         if (Gate::check('listAll', Election::class)) {
-            $election->candidates->loadCount(['votes' => function ($query) use ($election) {
-                $query->ofElection($election);
-            }, ]);
-            $election->electionParties->loadCount(['votes' => function ($query) use ($election) {
-                $query->ofElection($election);
-            }, ]);
+            $voteService->getVotesCount($election);
         } elseif (Gate::check('listPublish', Election::class)) {
             //
         }
@@ -67,15 +61,19 @@ class ElectionController extends Controller
         return response()->noContent();
     }
 
-    public function showVote(Election $election): AnonymousResourceCollection
+    public function showVote(VoteService $voteService, Election $election): VoteResource
     {
-        $votes = Auth::user()->votes()->ofElection($election)->get();
+        $vote = $voteService->getUserVote($election);
 
-        foreach ($votes as $vote) {
+        if ($vote) {
             $this->authorize('view', $vote);
+
+            foreach ($vote->votes as $childrenVote) {
+                $this->authorize('view', $childrenVote);
+            }
         }
 
-        return VoteResource::collection($votes);
+        return VoteResource::make($vote);
     }
 
     public function vote(VoteElectionRequest $request, Election $election, VoteService $voteService): Response

@@ -20,9 +20,11 @@
 ### Run every time migrations change
 - `./sail db:seed`
 
+### Generate crypto keys for encryption and decryption votes
+- `./sail artisan crypto:generate-keys`
+
 ### Pint
 - `./sail bash -c 'vendor/bin/pint'`
-
 
 ### FAQ
 Need to start over?

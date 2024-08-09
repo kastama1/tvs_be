@@ -40,6 +40,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * RELATIONS
  * @property Collection<ElectionParty> $electionParties
  * @property Collection<Candidate> $candidates
+ * @property Collection<Vote> $votes
  */
 class Election extends Model
 {
