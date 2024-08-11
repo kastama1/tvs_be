@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * ID
@@ -25,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property bool $published
  * @property bool $active
  * @property bool $ended
+ * @property bool $userVoted
  * @property ElectionVotableTypeEnum $votable
  * @property string $votableType
  * @property int $preferVotes
@@ -87,6 +89,15 @@ class Election extends Model
 
         return new Attribute(
             get: fn (): bool => $this->end_to <= $now,
+        );
+    }
+
+    protected function userVoted(): Attribute
+    {
+        $now = now();
+
+        return new Attribute(
+            get: fn (): bool => $this->votes()->where('user_id', '=', Auth::user()->id)->count() > 0,
         );
     }
 

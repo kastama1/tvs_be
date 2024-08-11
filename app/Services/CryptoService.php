@@ -16,21 +16,21 @@ class CryptoService
 
     public function encryptPublic(string $data): string
     {
-        $publicKey = PublicKey::fromFile(storage_path('keys/public.key'));
+        $publicKey = PublicKey::fromFile(storage_path('app/keys/public.key'));
 
         return $publicKey->encrypt($data);
     }
 
     public function encryptPrivate(string $data): string
     {
-        $privateKey = PrivateKey::fromFile(storage_path('keys/private.key'));
+        $privateKey = PrivateKey::fromFile(storage_path('app/keys/private.key'));
 
         return $privateKey->encrypt($data);
     }
 
     public function decryptPrivate(string $encryptedData): string
     {
-        $privateKey = PrivateKey::fromFile(storage_path('keys/private.key'));
+        $privateKey = PrivateKey::fromFile(storage_path('app/keys/private.key'));
 
         return $privateKey->decrypt($encryptedData);
     }

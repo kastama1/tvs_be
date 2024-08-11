@@ -28,6 +28,7 @@ class ElectionResource extends JsonResource
             'published' => $this->published,
             'active' => $this->active,
             'ended' => $this->ended,
+            'userVoted' => $this->userVoted,
             'publishFrom' => $this->publish_from,
             'startFrom' => $this->start_from,
             'endTo' => $this->end_to,
