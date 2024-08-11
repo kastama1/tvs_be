@@ -18,6 +18,6 @@ class GenerateKeys extends Command
 
         (new KeyPair())->generate(storage_path('app/keys/private.key'), storage_path('app/keys/public.key'));
 
-        $this->info('Crypto keys generated successfully');
+        $this->info(sprintf('Crypto keys generated successfully in %s and %s', storage_path('app/keys/private.key'), storage_path('app/keys/public.key')));
     }
 }
