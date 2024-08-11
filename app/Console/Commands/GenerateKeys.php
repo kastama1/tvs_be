@@ -16,7 +16,13 @@ class GenerateKeys extends Command
     {
         Storage::makeDirectory('keys');
 
-        $keys = (new KeyPair())->generate(storage_path('app/keys/private.key'), storage_path('app/keys/public.key'));
+        $privateKeyPath = storage_path('app/keys/private.key') ;
+        $publicKeyPath = storage_path('app/keys/public.key');
+
+        $keys = (new KeyPair())->generate($privateKeyPath, $publicKeyPath);
+
+        chmod($privateKeyPath, 777);
+        chmod($publicKeyPath, 777);
 
         $this->info(sprintf('Crypto keys generated successfully in %s and %s', storage_path('app/keys/private.key'), storage_path('app/keys/public.key')));
         $this->info(sprintf('%s and %s', $keys[0], $keys[1]));
