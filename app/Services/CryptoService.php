@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Carbon\Carbon;
+use Spatie\Crypto\Rsa\PrivateKey;
 use Spatie\Crypto\Rsa\PublicKey;
 use Spatie\SimpleExcel\SimpleExcelWriter;
 
@@ -15,27 +16,21 @@ class CryptoService
 
     public function encryptPublic(string $data): string
     {
-        $publicKey = file_get_contents(storage_path('app/keys/public.key'));
-
-        $publicKey = new PublicKey($publicKey);
+        $publicKey = PublicKey::fromFile(storage_path('app/keys/public.key'));
 
         return $publicKey->encrypt($data);
     }
 
     public function encryptPrivate(string $data): string
     {
-        $privateKey =file_get_contents(storage_path('app/keys/private.key'));
-
-        $privateKey = new PublicKey($privateKey);
+        $privateKey = PrivateKey::fromFile(storage_path('app/keys/private.key'));
 
         return $privateKey->encrypt($data);
     }
 
     public function decryptPrivate(string $encryptedData): string
     {
-        $privateKey = file_get_contents(storage_path('app/keys/private.key'));
-
-        $privateKey = new PublicKey($privateKey);
+        $privateKey = PrivateKey::fromFile(storage_path('app/keys/private.key'));
 
         return $privateKey->decrypt($encryptedData);
     }
