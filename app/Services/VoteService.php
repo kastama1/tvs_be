@@ -41,7 +41,7 @@ class VoteService
             'votable_type' => $parentVote ? Candidate::class : $election->votableType,
             'votable_id' => $votableId,
             'election_id' => $election->id,
-            'vote_id' => $parentVote,
+            'vote_id' => $parentVote?->id,
             'user_id' => $user->id,
         ]);
     }
