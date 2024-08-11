@@ -6,11 +6,13 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "ext-zip": "*",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
-        "spatie/crypto": "^2.1"
+        "spatie/crypto": "^2.1",
+        "spatie/simple-excel": "^3.6"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.9",

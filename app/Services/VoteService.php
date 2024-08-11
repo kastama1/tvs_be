@@ -8,7 +8,6 @@ use App\Models\Election;
 use App\Models\ElectionParty;
 use App\Models\User;
 use App\Models\Vote;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class VoteService
@@ -26,32 +25,25 @@ class VoteService
         $user = Auth::user();
 
         if ($user) {
-            $previousVote = Vote::latest()->first();
-
-            $vote = $this->createVote($voteData['vote'], $user, $previousVote ? $previousVote->hash : '0', $election);
+            $vote = $this->createVote($voteData['vote'], $user, $election);
 
             if ($election->votable === ElectionVotableTypeEnum::ELECTION_PARTIES && array_key_exists('prefer_votes', $voteData)) {
-                $previousVote = $vote;
                 foreach ($voteData['prefer_votes'] as $preferVote) {
-                    $previousVote = $this->createVote($preferVote, $user, $previousVote->hash, $election, $vote);
+                    $this->createVote($preferVote, $user, $election, $vote);
                 }
             }
         }
     }
 
-    private function createVote(int $votableId, User $user, string $previousHash, Election $election, Vote $parentVote = null): Vote
+    private function createVote(int $votableId, User $user, Election $election, Vote $parentVote = null): Vote
     {
-        $vote = new Vote();
-        $vote->previous_hash = $previousHash;
-        $vote->hash = $this->cryptoService->getHash($previousHash, $votableId, Carbon::now()->toDateTimeString());
-        $vote->votable_type = $parentVote ? Candidate::class : $election->votableType;
-        $vote->votable_id = base64_encode($this->cryptoService->encrypt((string) $votableId));
-        $vote->election_id = $election->id;
-        $vote->vote_id = $parentVote?->id;
-        $vote->user_id = $user->id;
-        $vote->save();
-
-        return $vote;
+        return Vote::create([
+            'votable_type' => $parentVote ? Candidate::class : $election->votableType,
+            'votable_id' => $votableId,
+            'election_id' => $election->id,
+            'vote_id' => $parentVote,
+            'user_id' => $user->id,
+        ]);
     }
 
     public function getUserVote($election): ?Vote
@@ -59,33 +51,24 @@ class VoteService
         $vote = Auth::user()->vote()->ofElection($election)->with('votes')->latest()->first();
 
         if ($vote) {
-            $vote->votable_id = $this->cryptoService->decrypt(base64_decode($vote->votable_id));
-
-            foreach ($vote->votes as $childVote) {
-                $childVote->votable_id = $this->cryptoService->decrypt(base64_decode($childVote->votable_id));
-            }
-
             return $vote;
         }
 
         return null;
     }
 
-    public function getVotesCount(Election $election): void
+    public function getVotes(Election $election): void
     {
         $election->load(['votes' => function ($query) use ($election) {
             $query->ofElection($election)->where('vote_id', '=', null)->orderByDesc('created_at');
         }, 'votes.votes']);
 
         $election->votes = $election->votes->unique('user_id');
+    }
 
-        foreach ($election->votes as $vote) {
-            $vote->votable_id = (int) $this->cryptoService->decrypt(base64_decode($vote->votable_id));
-
-            foreach ($vote->votes as $childVote) {
-                $childVote->votable_id = (int) $this->cryptoService->decrypt(base64_decode($childVote->votable_id));
-            }
-        }
+    public function getVotesCount(Election $election): void
+    {
+        $this->getVotes($election);
 
         if ($election->votable === ElectionVotableTypeEnum::ELECTION_PARTIES) {
             foreach ($election->electionParties as $electionParty) {
@@ -105,6 +88,7 @@ class VoteService
             }
         } elseif ($election->votable === ElectionVotableTypeEnum::CANDIDATES) {
             foreach ($election->candidates as $candidate) {
+
                 $candidate->votes_count = $election->votes->filter(function ($vote) use ($candidate) {
                     return $vote->votable_id === $candidate->id && $vote->votable_type === Candidate::class;
                 })->count();

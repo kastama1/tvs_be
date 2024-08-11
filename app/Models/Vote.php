@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\CryptoService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Str;
 
 /**
  * ID
@@ -16,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int $id
  *
  * ATTRIBUTES
+ * @property string $uuid
  * @property int $votable_id
  * @property string $votable_type
  * @property string $hash
@@ -31,13 +34,38 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * FOREIGN KEYS
  *
  * RELATIONS
- * @property Collection<ElectionParty|Candidate> $votable
+ * @property ElectionParty|Candidate $votable
  * @property User $user
  * @property Election $election
  * @property Collection<Vote> $votes
  */
 class Vote extends Model
 {
+    protected static function boot()
+    {
+        parent::boot();
+
+        $cryptoService = app(CryptoService::class);
+
+        static::creating(function ($vote) use ($cryptoService) {
+            /** @var Vote $vote */
+            $vote->uuid = Str::uuid();
+
+            $previousVote = Vote::latest()->first();
+            $previousHash = $previousVote ? $previousVote->hash : '0';
+
+            $vote->previous_hash = $previousHash;
+            $vote->hash = $cryptoService->getHash($previousHash, $vote->votable_id);
+
+            $vote->votable_id = utf8_encode($cryptoService->encryptPublic($vote->votable_id));
+        });
+
+        static::retrieved(function ($vote) use ($cryptoService) {
+            /** @var Vote $vote */
+            $vote->votable_id = (int) $cryptoService->decryptPrivate(utf8_decode($vote->votable_id));
+        });
+    }
+
     protected $fillable = [
         'votable_type',
         'hash',
@@ -45,6 +73,7 @@ class Vote extends Model
         'votable_id',
         'election_id',
         'vote_id',
+        'user_id',
     ];
 
     protected $hidden = [

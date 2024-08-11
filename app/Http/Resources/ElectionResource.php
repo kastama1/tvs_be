@@ -27,6 +27,7 @@ class ElectionResource extends JsonResource
             'candidates' => CandidateResource::collection($this->candidates),
             'published' => $this->published,
             'active' => $this->active,
+            'ended' => $this->ended,
             'publishFrom' => $this->publish_from,
             'startFrom' => $this->start_from,
             'endTo' => $this->end_to,

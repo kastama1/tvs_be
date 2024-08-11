@@ -10,7 +10,8 @@ return new class extends Migration
     {
         Schema::create('votes', function (Blueprint $table) {
             $table->id();
-            $table->blob('votable_id');
+            $table->uuid();
+            $table->text('votable_id');
             $table->string('votable_type');
             $table->string('hash');
             $table->string('previous_hash');

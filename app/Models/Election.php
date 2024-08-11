@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $info
  * @property bool $published
  * @property bool $active
+ * @property bool $ended
  * @property ElectionVotableTypeEnum $votable
  * @property string $votableType
  * @property int $preferVotes
@@ -67,7 +68,7 @@ class Election extends Model
         $now = now();
 
         return new Attribute(
-            get: fn (): bool => $this->publish_from <= $now && $this->end_to > $now,
+            get: fn (): bool => $this->publish_from <= $now && $now < $this->end_to,
         );
     }
 
@@ -76,7 +77,16 @@ class Election extends Model
         $now = now();
 
         return new Attribute(
-            get: fn (): bool => $this->start_from <= $now && $this->end_to > $now,
+            get: fn (): bool => $this->start_from <= $now && $now < $this->end_to,
+        );
+    }
+
+    protected function ended(): Attribute
+    {
+        $now = now();
+
+        return new Attribute(
+            get: fn (): bool => $this->end_to <= $now,
         );
     }
 

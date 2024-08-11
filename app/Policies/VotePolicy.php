@@ -12,4 +12,13 @@ class VotePolicy
     {
         return $user->role === UserRoleEnum::VOTER && $vote->user->id === $user->id;
     }
+
+    public function download(User $user, Vote $vote): bool
+    {
+        $userRole = $user->role === UserRoleEnum::VOTER;
+        $usersVore = $vote->user->id === $user->id;
+        $endedElection = $vote->election->ended;
+
+        return $userRole && $usersVore && $endedElection;
+    }
 }

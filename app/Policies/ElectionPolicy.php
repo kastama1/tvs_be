@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Enum\UserRoleEnum;
 use App\Models\Election;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class ElectionPolicy
 {
@@ -23,8 +24,9 @@ class ElectionPolicy
         $isAdmin = $user->role === UserRoleEnum::ADMIN;
         $isVoter = $user->role === UserRoleEnum::VOTER;
         $isPublished = $election->published;
+        $userVoted = $election->votes()->where('user_id', '=', Auth::user()->id)->count() > 0;
 
-        return $isAdmin || ($isVoter && $isPublished);
+        return $isAdmin || ($isVoter && ($isPublished || $userVoted));
     }
 
     public function create(User $user): bool
@@ -39,7 +41,14 @@ class ElectionPolicy
 
     public function vote(User $user, Election $election): bool
     {
-        return $user->role === UserRoleEnum::VOTER && $election->active;
+        $userVoted = $election->votes()->where('user_id', '=', Auth::user()->id)->count() > 0;
+
+        return $user->role === UserRoleEnum::VOTER && $election->active || $userVoted;
+    }
+
+    public function downloadVotes(User $user, Election $election): bool
+    {
+        return $user->role === UserRoleEnum::ADMIN && $election->ended;
     }
 
     public function assignOptions(User $user): bool

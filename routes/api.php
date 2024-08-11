@@ -4,6 +4,7 @@ use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\ElectionController;
 use App\Http\Controllers\ElectionPartyController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\VoteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,7 @@ Route::middleware(['auth:sanctum'])->group(static function () {
         Route::put('/{election}', [ElectionController::class, 'update']);
         Route::get('/{election}/vote', [ElectionController::class, 'showVote']);
         Route::post('/{election}/vote', [ElectionController::class, 'vote']);
+        Route::get('/{election}/download-votes', [ElectionController::class, 'downloadVotes']);
         Route::put('/{election}/assign-options', [ElectionController::class, 'assignOptions']);
     });
 
@@ -49,6 +51,10 @@ Route::middleware(['auth:sanctum'])->group(static function () {
 
     Route::prefix('/files')->group(static function () {
         Route::delete('/{file}', [FileController::class, 'destroy']);
+    });
+
+    Route::prefix('/votes')->group(static function () {
+        Route::get('/{vote}/download', [VoteController::class, 'download']);
     });
 });
 
